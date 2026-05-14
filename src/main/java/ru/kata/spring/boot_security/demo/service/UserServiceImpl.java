@@ -1,0 +1,149 @@
+package ru.kata.spring.boot_security.demo.service;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.repository.UserRepository;
+
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Service
+public class UserServiceImpl implements UserService, UserDetailsService {
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            user.getRoles().size();
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user != null) {
+            user.getRoles().size();
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null) {
+            user.getRoles().size();
+        }
+        return user;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> findAll() {
+        List<User> users = userRepository.findAll();
+        users.forEach(user -> user.getRoles().size());
+        return users;
+    }
+
+    @Override
+    @Transactional
+    public User save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void update(User user) {
+        User existingUser = getById(user.getId());
+        if (existingUser == null) {
+            throw new RuntimeException("User not found with id: " + user.getId());
+        }
+
+        existingUser.setFirstName(user.getFirstName());
+        existingUser.setLastName(user.getLastName());
+        existingUser.setAge(user.getAge());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setUsername(user.getUsername());
+
+        if (StringUtils.hasText(user.getPassword())) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
+            existingUser.setRoles(user.getRoles());
+        }
+
+        userRepository.save(existingUser);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + username));
+//        user.getRoles().size();
+//        return user;
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден: " + email));
+        user.getRoles().size();
+        return user;
+    }
+
+    @PostConstruct
+    @Transactional
+    public void init() {
+        if (roleRepository.count() == 0) {
+            roleRepository.save(new Role("USER"));
+            roleRepository.save(new Role("ADMIN"));
+        }
+
+        if (userRepository.count() == 0) {
+            Role userRole = roleRepository.findByName("USER").get();
+            Role adminRole = roleRepository.findByName("ADMIN").get();
+
+            Set<Role> adminRoles = new HashSet<>();
+            adminRoles.add(adminRole);
+            adminRoles.add(userRole);
+
+            User admin = new User("Admin", "Adminov", 35, "admin@mail.ru", "admin", "admin", adminRoles);
+
+            save(admin);
+
+            Set<Role> userRoles = new HashSet<>();
+            userRoles.add(userRole);
+
+            User user = new User("User", "Userov", 30, "user@mail.ru", "user", "user", userRoles);
+
+            save(user);
+        }
+    }
+}
