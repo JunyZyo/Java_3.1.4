@@ -26,7 +26,7 @@ public class AdminController {
         String name = principal.getName();
         User user = userService.findByEmail(name);
         if (user == null) {
-            user = userService.findByUsername(name);
+            user = userService.findByEmail(name);
         }
         return user;
     }

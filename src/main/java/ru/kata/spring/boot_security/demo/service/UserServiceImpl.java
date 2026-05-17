@@ -52,16 +52,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public User findByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null) {
-            user.getRoles().size();
-        }
-        return user;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<User> findAll() {
         List<User> users = userRepository.findAll();
         users.forEach(user -> user.getRoles().size());
@@ -93,7 +83,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         existingUser.setLastName(user.getLastName());
         existingUser.setAge(user.getAge());
         existingUser.setEmail(user.getEmail());
-        existingUser.setUsername(user.getUsername());
 
         if (StringUtils.hasText(user.getPassword())) {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -134,14 +123,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             adminRoles.add(adminRole);
             adminRoles.add(userRole);
 
-            User admin = new User("Admin", "Adminov", 35, "admin@mail.ru", "admin", "admin", adminRoles);
+            User admin = new User("Admin", "Adminov", 35, "admin@mail.ru", "admin", adminRoles);
 
             save(admin);
 
             Set<Role> userRoles = new HashSet<>();
             userRoles.add(userRole);
 
-            User user = new User("User", "Userov", 30, "user@mail.ru", "user", "user", userRoles);
+            User user = new User("User", "Userov", 30, "user@mail.ru", "user", userRoles);
 
             save(user);
         }

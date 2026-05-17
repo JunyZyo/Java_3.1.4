@@ -23,11 +23,7 @@ public class UserController {
     public String showUserProfile(Model model, Principal principal) {
         String name = principal.getName();
 
-        // Ищем сначала по email, потом по username
         User user = userService.findByEmail(name);
-        if (user == null) {
-            user = userService.findByUsername(name);
-        }
 
         model.addAttribute("user", user);
         return "user";
