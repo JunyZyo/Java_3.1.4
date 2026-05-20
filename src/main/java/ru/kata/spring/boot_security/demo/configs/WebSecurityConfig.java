@@ -20,10 +20,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf()
+                .ignoringAntMatchers("/api/**")  // ← отключить CSRF для API
+                .and()
                 .authorizeRequests()
                 .antMatchers("/", "/index", "/login", "/403").permitAll()
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/user/**").hasAnyAuthority("USER", "ADMIN")
+                .antMatchers("/api/admin/**").hasAuthority("ADMIN")       // ← для админа
+                .antMatchers("/api/user/**").hasAnyAuthority("USER", "ADMIN") // ← для пользователя
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

@@ -33,10 +33,10 @@ public class AdminController {
 
     @GetMapping("/users")
     public String showAllUsers(Model model, Principal principal) {
-        model.addAttribute("users", userService.findAll());
-        model.addAttribute("currentUser", getCurrentUser(principal));
-        model.addAttribute("allRoles", roleService.findAll());
-        model.addAttribute("newUser", new User());
+//        model.addAttribute("users", userService.findAll());
+//        model.addAttribute("currentUser", getCurrentUser(principal));
+//        model.addAttribute("allRoles", roleService.findAll());
+//        model.addAttribute("newUser", new User());
         return "admin/admin";
     }
 

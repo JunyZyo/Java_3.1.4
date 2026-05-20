@@ -38,6 +38,10 @@ public class AdminRestController {
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         user.setId(null);
+        // Убедитесь, что пароль не null
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be empty");
+        }
         User saved = userService.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
