@@ -45,7 +45,7 @@ function renderTable(users) {
         <td>${user.lastName}</td>
         <td>${user.age || 'N/A'}</td>
         <td>${user.email}</td>
-        <td>${user.roles.map(r => roleBadge(r)).join('')}</td>
+        <td>${user.roles.map(r => `<span class="badge badge-role" style="color:black;">${r.name}</span>`).join('')}</td>
         <td><button class="btn-edit" onclick="openEdit(${user.id})">Edit</button></td>
         <td><button class="btn-delete" onclick="openDelete(${user.id}, '${user.firstName} ${user.lastName}')">Delete</button></td>
     </tr>
@@ -185,7 +185,7 @@ async function confirmDelete() {
     showAlert('Пользователь удалён!', 'danger');
 }
 
-// ==================== Уведомления ====================
+// Уведомления
 function showAlert(msg, type) {
     const container = document.getElementById('alertContainer');
     container.innerHTML = `<div class="alert alert-${type} py-2 alert-dismissible fade show" role="alert">
@@ -195,7 +195,7 @@ function showAlert(msg, type) {
     setTimeout(() => container.innerHTML = '', 3000);
 }
 
-// ==================== Инициализация ====================
+// Инициализация
 document.getElementById('newUserForm').addEventListener('submit', function(e) {
     e.preventDefault();
     createUser();

@@ -26,7 +26,7 @@ function renderTable(user) {
             <td>${user.lastName}</td>
             <td>${user.age || 'N/A'}</td>
             <td>${user.email}</td>
-            <td>${user.roles.map(r => roleBadge(r)).join('')}</td>
+         <td>${user.roles.map(r => `<span class="badge badge-role" style="color:black;">${r.name}</span>`).join('')}</td>
         </tr>
     `;
 }

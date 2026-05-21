@@ -106,10 +106,10 @@
 <body>
 <nav class="navbar navbar-dark border-bottom">
     <div class="container">
-        <span class="navbar-brand" th:text="${user.email}">user@mail.ru</span>
+        <span class="navbar-brand" id="userEmail">user@mail.ru</span>
         <span class="navbar-text">
             with roles:
-            <span th:each="role : ${user.roles}" class="badge badge-role me-1" th:text="${role.name}">USER</span>
+            <span id="userRoles"></span>
             </span>
         <div class="ms-auto d-flex align-items-center gap-2">
             <form th:action="@{/logout}" method="post">
@@ -130,7 +130,7 @@
                     <a href="/admin/users" class="list-group-item list-group-item-action">
                         Admin
                     </a>
-                    <a href="/user" class="list-group-item list-group-item-action" th:classappend="'active'">
+                    <a href="/user" class="list-group-item list-group-item-action active">
                         User
                     </a>
                 </div>
@@ -143,7 +143,7 @@
         <div class="card-header">
             About user
         </div>
-        <div class="card-body p-0" th:if="${user}">
+        <div class="card-body p-0">
             <table class="table info-table">
                 <thead>
                 <tr>
@@ -161,16 +161,7 @@
 
                 </tr>
                 </thead>
-                <tbody>
-                <td th:text="${user.id}"></td>
-                <td th:text="${user.firstName}"></td>
-                <td th:text="${user.lastName}"></td>
-                <td th:text="${user.age}"></td>
-                <td th:text="${user.email}"></td>
-                <td>
-                    <span th:each="role : ${user.roles}" class="badge badge-role" th:text="${role.name}" style="color:black;"></span>
-                </td>
-                </tbody>
+                <tbody id="userProfileBody"></tbody>
             </table>
         </div>
     </div>
